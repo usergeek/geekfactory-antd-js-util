@@ -1,0 +1,31 @@
+{
+  "name": "geekfactory-antd-js-util",
+  "version": "0.0.1",
+  "description": "ANTD JS utils by GeekFactory",
+  "main": "./lib/es5/index.js",
+  "author": "GeekFactory <support@usergeek.com>",
+  "directories": {
+    "lib": "lib"
+  },
+  "homepage": "https://github.com/usergeek",
+  "keywords": [],
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "clean": "rm -rf lib",
+    "prebuild": "npm run clean",
+    "build": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "antd": "4.24.5",
+    "lodash": ">=4.17.21",
+    "geekfactory-jsonmodel-util": "github:usergeek/geekfactory-jsonmodel-util#v0.0.1"
+  },
+  "devDependencies": {
+    "@types/lodash": ">=4.14.185",
+    "@types/react": "17.0.62",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  }
+}
