@@ -21,7 +21,7 @@
     "antd": "4.24.5"
   },
   "peerDependencies": {
-    "geekfactory-jsonmodel-util": "github:usergeek/geekfactory-jsonmodel-util#v0.0.6"
+    "geekfactory-jsonmodel-util": "github:usergeek/geekfactory-jsonmodel-util#v0.0.7"
   },
   "devDependencies": {
     "@types/lodash": ">=4.14.185",
