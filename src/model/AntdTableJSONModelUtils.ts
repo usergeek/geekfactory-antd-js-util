@@ -9,26 +9,21 @@ export const updateGenericPagingJSONModel = (pagingJSONModel: GenericPagingJSONM
 export const updateGenericSortJSONModel = <TableItemType, SortKey extends string>(sortJSONModel: GenericSortingJSONModel<SortKey>, sorter: SorterResult<TableItemType> | SorterResult<TableItemType>[] | null) => {
     if (sorter != undefined) {
         if (_.isArray(sorter)) {
-            console.log("updateGenericSortJSONModel: array", sorter);
             const values = _.compact(_.map(sorter, (sorterItem) => {
                 return getSortValuesJSONModelSerializedStateFromSorter<TableItemType, SortKey>(sorterItem)
             }))
-            console.log("updateGenericSortJSONModel: values", values);
             if (values.length > 0) {
                 sortJSONModel.getSortValuesJSONModel().setValue(values)
                 return
             }
         } else {
-            console.log("updateGenericSortJSONModel: single", sorter);
             const serializedStateFromSorter = getSortValuesJSONModelSerializedStateFromSorter<TableItemType, SortKey>(sorter);
-            console.log("updateGenericSortJSONModel: serializedStateFromSorter", serializedStateFromSorter);
             if (serializedStateFromSorter != undefined) {
                 sortJSONModel.getSortValuesJSONModel().setValue([serializedStateFromSorter])
                 return
             }
         }
     }
-    console.log("updateGenericSortJSONModel: reset");
     sortJSONModel.getSortValuesJSONModel().reset()
 }
 
@@ -36,7 +31,6 @@ const getSortValuesJSONModelSerializedStateFromSorter = <TableItemType, SortKey 
     // {column: undefined, order: undefined, field: undefined, columnKey: 'proposalCreatedTime'}
     const sortOrder: SortOrder | undefined = antdSortOrderToJSONModelSortOrder(sorter.order)
     const sortKey: string | undefined = antdSortKeyToJSONModelSortKey(sorter.columnKey)
-    console.log("getSortValuesJSONModelSerializedStateFromSorter: ", {sorter, sortOrder, sortKey});
     if (sortOrder != undefined && sortKey != undefined) {
         const sortItemJSONModel = new GenericSortingItemJSONModel<SortKey>();
         sortItemJSONModel.getKeyJSONModel().setValue(sortKey)
