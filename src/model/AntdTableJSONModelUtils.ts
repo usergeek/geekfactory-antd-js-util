@@ -1,6 +1,7 @@
 import {GenericFilterJSONModel, GenericFilterJSONModelArrayValue, GenericPagingJSONModel, GenericSortingItemJSONModel, GenericSortingItemJSONModelSerializedState, GenericSortingJSONModel, GenericSortingJSONModelSerializedState, SORT_ODER_ASC, SORT_ODER_DESC, SortOrder} from "geekfactory-jsonmodel-util";
 import {FilterValue, Key, Key as AntdKey, SorterResult, SortOrder as AntdSortOrder, TablePaginationConfig} from "antd/lib/table/interface";
 import _ from "lodash"
+import {GenericFilterItemJSONModel} from "geekfactory-jsonmodel-util/lib/es5/model/GenericFilterJSONModel";
 
 export const updateGenericPagingJSONModel = (pagingJSONModel: GenericPagingJSONModel, tablePagination: TablePaginationConfig) => {
     pagingJSONModel.setValue(tablePagination.current, tablePagination.pageSize)
@@ -13,18 +14,22 @@ export const updateGenericSortJSONModel = <TableItemType, SortKey extends string
                 return getSortValuesJSONModelSerializedStateFromSorter<TableItemType, SortKey>(sorterItem)
             }))
             if (values.length > 0) {
-                sortJSONModel.getSortValuesJSONModel().setValue(values)
+                sortJSONModel.overwriteFromSortValuesJSONModels(_.map(values, (value) => {
+                    return new GenericSortingItemJSONModel<SortKey>(value)
+                }))
                 return
             }
         } else {
             const serializedStateFromSorter = getSortValuesJSONModelSerializedStateFromSorter<TableItemType, SortKey>(sorter);
             if (serializedStateFromSorter != undefined) {
-                sortJSONModel.getSortValuesJSONModel().setValue([serializedStateFromSorter])
+                sortJSONModel.overwriteFromSortValuesJSONModels(_.map([serializedStateFromSorter], (value) => {
+                    return new GenericSortingItemJSONModel<SortKey>(value)
+                }))
                 return
             }
         }
     }
-    sortJSONModel.getSortValuesJSONModel().reset()
+    sortJSONModel.reset()
 }
 
 const getSortValuesJSONModelSerializedStateFromSorter = <TableItemType, SortKey extends string>(sorter: SorterResult<TableItemType>): GenericSortingItemJSONModelSerializedState<SortKey> | undefined => {
@@ -39,17 +44,16 @@ const getSortValuesJSONModelSerializedStateFromSorter = <TableItemType, SortKey 
     }
 }
 
-export const updateGenericFilterJSONModel = <FilterItemName, FilterItemValue>(filterJSONModel: GenericFilterJSONModel<FilterItemName, FilterItemValue>, filter: Record<string, FilterValue | null>) => {
-    const values: Array<GenericFilterJSONModelArrayValue<FilterItemName, FilterItemValue>> = []
+export const updateGenericFilterJSONModel = <FilterItemName extends string, FilterItemValue>(filterJSONModel: GenericFilterJSONModel<FilterItemName, FilterItemValue>, filter: Record<string, FilterValue | null>) => {
+    const values: Array<GenericFilterItemJSONModel<FilterItemName, FilterItemValue>> = []
     _.each(filter, (filterValue, filterKey) => {
         if (filterValue != undefined && _.isArray(filterValue) && !_.isEmpty(filterValue)) {
-            values.push({
-                name: filterKey as unknown as FilterItemName,
-                values: filterValue as unknown as Array<FilterItemValue>,
-            })
+            const itemJSONModel = new GenericFilterItemJSONModel<FilterItemName, FilterItemValue>();
+            itemJSONModel.setNameAndValues(filterKey as unknown as FilterItemName, filterValue as unknown as Array<FilterItemValue>)
+            values.push(itemJSONModel)
         }
     })
-    filterJSONModel.getFilterValuesJSONModel().setValue(values)
+    filterJSONModel.overwriteFromFilterValuesJSONModels(values)
 }
 
 export const getTablePaginationConfigFromGenericPagingJSONModel = (pagingJSONModel: GenericPagingJSONModel, defaultPaginationConfig: TablePaginationConfig): TablePaginationConfig => {
@@ -61,20 +65,20 @@ export const getTablePaginationConfigFromGenericPagingJSONModel = (pagingJSONMod
 }
 
 export const getTableSorterFromGenericSortJSONModel = <TableItemType, SortKey extends string>(sortJSONModel: GenericSortingJSONModel<SortKey>): SorterResult<TableItemType> | SorterResult<TableItemType>[] => {
-    const value: GenericSortingJSONModelSerializedState<SortKey> | undefined = sortJSONModel.getSortValuesJSONModel().getValue();
+    const value: Array<GenericSortingItemJSONModel<SortKey>> | undefined = sortJSONModel.getSortItems();
     if (value != undefined && value.length > 0) {
         if (value.length > 1) {
             return _.map(value, (sortItem) => {
                 return {
-                    columnKey: sortItem.key,
-                    order: jsonModelSortOrderToAntdSortOrder(sortItem.order),
+                    columnKey: sortItem.getKeyJSONModel().getValue(),
+                    order: jsonModelSortOrderToAntdSortOrder(sortItem.getOrderJSONModel().getValue()),
                 }
             })
         } else {
             const sortItem = value[0]
             return {
-                columnKey: sortItem.key,
-                order: jsonModelSortOrderToAntdSortOrder(sortItem.order),
+                columnKey: sortItem.getKeyJSONModel().getValue(),
+                order: jsonModelSortOrderToAntdSortOrder(sortItem.getOrderJSONModel().getValue()),
             }
         }
     }
@@ -83,9 +87,9 @@ export const getTableSorterFromGenericSortJSONModel = <TableItemType, SortKey ex
 
 export const getTableFilterFromGenericPagingJSONModel = <FilterItemName extends string, FilterItemValue extends Key>(filterJSONModel: GenericFilterJSONModel<FilterItemName, FilterItemValue>): Record<string, FilterValue | null> => {
     const filter: Record<string, FilterValue | null> = {}
-    filterJSONModel.getFilterValuesJSONModel().getValue()?.forEach((filterValue) => {
-        const name = filterValue.name
-        const values = filterValue.values
+    filterJSONModel.getFilterItems()?.forEach((filterValue) => {
+        const name = filterValue.getNameJSONModel().getValue()
+        const values = filterValue.getValuesJSONModel().getValue()
         if (name != undefined && values != undefined && !_.isEmpty(values)) {
             filter[name] = values
         }
