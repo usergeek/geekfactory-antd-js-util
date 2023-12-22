@@ -1,6 +1,6 @@
 import { GenericFilterJSONModel, GenericPagingJSONModel, GenericSortingJSONModel } from "geekfactory-jsonmodel-util";
 import { FilterValue, SorterResult, TablePaginationConfig } from "antd/lib/table/interface";
-declare type Key = string | number | boolean;
+type Key = string | number | boolean;
 export declare const updateGenericPagingJSONModel: (pagingJSONModel: GenericPagingJSONModel, tablePagination: TablePaginationConfig) => void;
 export declare const updateGenericSortJSONModel: <TableItemType, SortKey extends string>(sortJSONModel: GenericSortingJSONModel<SortKey>, sorter: SorterResult<TableItemType> | SorterResult<TableItemType>[] | null) => void;
 export declare const updateGenericFilterJSONModel: <FilterItemName extends string, FilterItemValue>(filterJSONModel: GenericFilterJSONModel<FilterItemName, FilterItemValue>, filter: Record<string, FilterValue | null>) => void;

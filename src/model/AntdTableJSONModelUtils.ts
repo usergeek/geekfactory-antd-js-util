@@ -1,4 +1,4 @@
-import {GenericFilterJSONModel, GenericFilterJSONModelArrayValue, GenericPagingJSONModel, GenericSortingItemJSONModel, GenericSortingItemJSONModelSerializedState, GenericSortingJSONModel, GenericSortingJSONModelSerializedState, SORT_ODER_ASC, SORT_ODER_DESC, SortOrder} from "geekfactory-jsonmodel-util";
+import {GenericFilterJSONModel, GenericPagingJSONModel, GenericSortingItemJSONModel, GenericSortingItemJSONModelSerializedState, GenericSortingJSONModel, SORT_ODER_ASC, SORT_ODER_DESC, SortOrder} from "geekfactory-jsonmodel-util";
 import {FilterValue, Key as AntdKey, SorterResult, SortOrder as AntdSortOrder, TablePaginationConfig} from "antd/lib/table/interface";
 import _ from "lodash"
 import {GenericFilterItemJSONModel} from "geekfactory-jsonmodel-util/lib/es5/model/GenericFilterJSONModel";

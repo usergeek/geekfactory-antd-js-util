@@ -1,6 +1,6 @@
 {
   "name": "geekfactory-antd-js-util",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "ANTD JS utils by GeekFactory",
   "main": "./lib/es5/index.js",
   "author": "GeekFactory <support@usergeek.com>",
@@ -18,10 +18,11 @@
     "build": "tsc --project tsconfig.json"
   },
   "dependencies": {
-    "antd": "4.24.5"
+    "antd": "^5.12.5"
   },
   "peerDependencies": {
-    "geekfactory-jsonmodel-util": "github:usergeek/geekfactory-jsonmodel-util#v0.0.18"
+    "geekfactory-jsonmodel-util": "github:usergeek/geekfactory-jsonmodel-util#v0.0.18",
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
     "@types/lodash": ">=4.14.185",
